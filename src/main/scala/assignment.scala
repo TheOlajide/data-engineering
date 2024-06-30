@@ -203,7 +203,15 @@ object assignment {
     else(number, "is not divisible by either 4 or 6")
 
     for(i <- 1 to 5){
-      print(i)}
+      println(i)}
+
+    for(i <- 1 to 5){
+      println(i*i)}
+
+    for(i <- 1 to 15)
+      if(i%3==0){
+        println(i)}
+
 
   }
 
