@@ -211,8 +211,72 @@ object assignment {
     for(i <- 1 to 15)
       if(i%3==0){
         println(i)}
+// sum of number
+    var  num = 231
+    var rem= 0
+    var sum = 0
+
+    while(num != 0){
+      rem = num % 10
+      sum = sum + rem
+      num = num/ 10}
+    println(sum)
+//palindrome
+var numm = 231
+var bb= 231
+var summ = 0
+var remm = 0
+
+while(numm != 0){
+  remm = numm% 10
+  summ = summ*10 + rem
+  numm = numm/10}
+
+  if(b == summ){
+    println("palindrome number")}
+
+  else{
+    println("not a palindrome")}
+
+//even numbers from 2 to 10
+    var start =2
+    while ( start <= 10) {
+      if(start %2== 0) {
+        println(start)}
+      start = start + 1}
+
+    //sum of all numbers from 1 to 50
+
+    val first = 1
+    val last = 50
+    val numbers = 50
+    def summation = numbers/ 2 * (first +last)
+    println(summation)
+
+    // square of numbers from 1 to 5
+    for (square <- 1 to 5){
+      println(square*square)}
+
+    //square of numbers from 1 to 5 using while loop
+    var square =  1
+    while (square <= 5) {
+      println(square*square)
+      square = square+1}
+
+    //first multiples of 3 using for loop
+    for (i <- 1 to 9) {
+      if (i%3 == 0)
+        println(i)}
+
+    //odd numbers from 1 to 15 using while loop
+    var odd=1
+    while (odd <= 15){
+      if(odd%2!=0)
+        println(odd)
+        odd=odd+1}
 
 
-  }
 
+
+    }
 }
