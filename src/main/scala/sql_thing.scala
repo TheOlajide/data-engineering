@@ -41,6 +41,17 @@ object sql_thing {
         HAVING COUNT(name) > 1
     )
 
+    //question 5
+    SELECT a.name, b.dept_name
+    FROM employees
+      JOIN(
+        SELECT dept_name
+          FROM departments
+          GROUP BY dept_id
+        HAVING COUNT(name)> 1
+      )
+    USING dept_id
+
 
 
 
