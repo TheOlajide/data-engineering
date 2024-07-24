@@ -32,7 +32,7 @@ object sql_thing {
 
     //question 5
     SELECT a.name, b.dept_name
-    FROM a.employee
+    FROM employee a
     JOIN departments USING dept_id
       WHERE a.dept_id IN(
       SELECT a.dept_id
@@ -43,14 +43,14 @@ object sql_thing {
 
     //question 5
     SELECT a.name, b.dept_name
-    FROM employees
+    FROM employees a
       JOIN(
         SELECT dept_name
           FROM departments
-          GROUP BY dept_id
-        HAVING COUNT(name)> 1
+          GROUP BY dept_name
+        HAVING COUNT(*)> 1
       )
-    USING dept_id
+    USING (dept_id);
 
 
 
