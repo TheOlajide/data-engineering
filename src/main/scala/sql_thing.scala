@@ -30,7 +30,16 @@ object sql_thing {
       FULL JOIN departments
     on employees.dept_id = departments.dept_id
 
-    //
+    //question 5
+    SELECT a.name, b.dept_name
+    FROM a.employee
+    JOIN departments USING dept_id
+      WHERE a.dept_id IN(
+      SELECT a.dept_id
+      FROM employees
+        GROUP BY dept_id
+        HAVING COUNT(name) > 1
+    )
 
 
 
