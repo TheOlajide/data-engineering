@@ -1,5 +1,5 @@
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.functions.{col, month, when}
+import org.apache.spark.sql.functions.{col, dayofmonth, dayofyear, month, when}
 
 object dataframeAssignment {
   def main(args: Array[String]): Unit = {
@@ -127,9 +127,106 @@ object dataframeAssignment {
       .when(col("age") < 30 && col ("salary")<35000, "young & low salary")
       .when(col("age")>= 30 && col("age")<= 40 && col("salary")>= 35000 && col ("salary") <= 45000, "middle aged and medium salary")
       .otherwise("old & high salary"))
-      df11.show()
+      df11.show(false)
 
-    
+
+    //question twelve
+    val reviews = List(
+      (1, 1),
+      (2, 4),
+      (3, 5)
+    ).toDF("review_id", "rating")
+    val df12 = reviews.withColumn("rating_comment", when (col("rating")<3 , "bad")
+      .when(col("rating")===3 || col("rating")===4, "good")
+      .otherwise("excellent"))
+    val df13 = df12.withColumn("is_positive", when (col("rating")>= 3, "True")
+      .otherwise("false"))
+    df13.show()
+
+    //question thirteen
+    val documents = List(
+      (1, "The quick brown fox"),
+      (2, "Lorem ipsum dolor sit amet"),
+      (3, "Spark is unified analytics engine")
+    ).toDF("doc_id", "content")
+    val df14  = documents.withColumn("content_category", when(col("content").contains("fox"), "Animal Related")
+      .when(col("content").contains("Lorem"), "Placeholder Text")
+      .when(col("content").contains("Spark"), "Tech Related"))
+    df14.show(false)
+
+    //question fourteen
+    val tasks = List(
+      (1, "2024-07-01", "2024-07-10"),
+      (2, "2024-08-01", "2024-08-15"),
+      (3, "2024-09-01", "2024-09-05")
+    ).toDF("task_id", "start_date", "end_date")
+    val df15 = tasks.withColumn("task_duration", when(col("end_date").minus(col("start_date"))<7, "short")
+      .when(col("end_date").minus(col("start_date"))>= 7 && col("end_date").minus(col("start_date"))<= 14, "Medium")
+      .otherwise("Long"))
+    df15.show()
+
+    //question fifteen
+    val orders_ = List(
+      (1, 5, 100),
+      (2, 10, 150),
+      (3, 20, 300)
+    ).toDF("order_id", "quantity", "total_price")
+    val df16 = orders_.withColumn("order_type", when(col("quantity")< 10 && col("total_price")< 200, "Small & Cheap")
+      .when(col("quantity")>= 10 && col("total_price") < 200, "Bulk & Discounted" )
+      .otherwise("Premium Order"))
+    df16.show()
+
+    //question sixteen
+    val weather = Seq(
+      (1, 25, 60),
+      (2, 35, 40),
+      (3, 15, 80)
+    ).toDF("day_id", "temperature", "humidity")
+    val  df17 = weather.withColumn("is_hot", when(col("temperature")> 30, "true")
+    .otherwise("false"))
+    val df18 = df17.withColumn("is_humid", when(col("humidity") > 35, "true")
+      .otherwise("false"))
+    df18.show()
+
+    //question seventeen
+    val scores = Seq (
+      (1, 85, 92),
+      (2, 58, 76),
+      (3, 72, 64)
+    ).toDF("student_id", "math_score", "english_score")
+    val df19 = scores.withColumn("math_grade", when(col("math_score")>80, "A")
+      .when(col("math_score")>60 &&  col("math_score") < 80, "B")
+      .otherwise("C"))
+    val df20 = df19.withColumn("english_grade", when(col("english_score")> 80, "A")
+      .when(col("english_score")> 60 && col("english_score")< 80, "B")
+      .otherwise("C"))
+    df20.show()
+
+    //question eighteen
+    val emails = List(
+      (1, "user@gmail.com"),
+      (2, "admin@yyahoo.com"),
+      (3, "info@hotmail.com")
+    ).toDF("email_id", "email_address")
+    val df21 = emails.withColumn("email_domain", when (col("email_address").contains("gmail"), "Gmail")
+      .when(col("email_address").contains("yahoo"), "Yahoo")
+      .otherwise("Hotmail"))
+    df21.show()
+
+    //question nineteen
+    val payments = List(
+      (1, "2024-07-15"),
+      (2, "2024-12-25"),
+      (3, "2024-11-01")
+    ).toDF("payment_id", "payment_date")
+    val df22= payments.select(col("payment_id"), col("payment_date"),
+      when(month(col("payment_date")).isin(1,2,3) , "Q1")
+        .when(month(col("payment_date")).isin(4,5,6), "Q2")
+        .when(month(col("payment_date")).isin(7,8,9), "Q3")
+        .otherwise("Q4")
+        .alias("quarter"))
+      df22.show()
+
 
   }
 }
