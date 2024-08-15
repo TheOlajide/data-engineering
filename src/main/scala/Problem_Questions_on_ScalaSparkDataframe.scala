@@ -584,10 +584,7 @@ object Problem_Questions_on_ScalaSparkDataframe {
       .withColumn("max_attendance", max(col("attendees")).over(w25))
     df83.show()
 
-    //26. Utility Billing Analysis
-    val Utility_Billing_Analysis = List(
-      ()
-    )
+
 
 
 
