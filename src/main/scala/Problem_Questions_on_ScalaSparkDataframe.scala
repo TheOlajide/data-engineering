@@ -312,7 +312,7 @@ object Problem_Questions_on_ScalaSparkDataframe {
       .withColumn("min_sales_amount", min(col("sales_amount")).over(w13))
       .withColumn("max_sales_amount", max(col("sales_amount")).over(w13))
     df43.show()
-
+/
     //14. Customer Purchase History
 
     val Customer_Purchase = List(
