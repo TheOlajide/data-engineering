@@ -39,7 +39,7 @@ object twentyfive_scalaSparkDataFrame_problems {
     df666.show()
 
 
-    2. Customer Churn Analysis
+//    2. Customer Churn Analysis
     val Customer_Churn = List(
       ("C001", "Premium Gold", "Yes", "2023-12-01", 1200, "USA"),
       ("C002", "Basic", "No", "NULL", 400, "Canada"),
