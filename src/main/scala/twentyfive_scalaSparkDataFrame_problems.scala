@@ -2,7 +2,7 @@ import org.apache.spark.sql.catalyst.ScalaReflection.universe.show
 import org.apache.spark.sql.{SparkSession, functions}
 import org.apache.spark.sql.catalyst.expressions.aggregate.Sum
 import org.apache.spark.sql.expressions.Window
-import org.apache.spark.sql.functions.{avg, col, count, datediff, lag, lead, max, min, month, regexp_replace, sum, when, year}
+import org.apache.spark.sql.functions.{abs, avg, col, count, date_format, datediff, from_unixtime, lag, lead, max, min, month, regexp_replace, split, sum, to_date, to_timestamp, unix_timestamp, when, year}
 
 
 object twentyfive_scalaSparkDataFrame_problems {
@@ -199,7 +199,7 @@ object twentyfive_scalaSparkDataFrame_problems {
       )
     df27.show()
 
-    //9, Employeee attendance analysis
+    //9, Employee attendance analysis
     val Employee_attendance = List(
       ("A001", "E001", "2023-11-01", "Present", "Sales", "Day"),
       ("A002", "E002", "2023-11-02", "Absent", "HR", "Night"),
@@ -218,20 +218,65 @@ object twentyfive_scalaSparkDataFrame_problems {
       .agg(
         sum(when(col("status").contains("Absent"),1).otherwise(0).as("number of absence")).as("nos of days absent")
           , avg(when(col("status").contains("Absent"), 1).otherwise(0)).as("avg nos of days absent")
+//        , max(col(""))
       )
     df32.show()
 
 
     //10.  Airline Flight Delay Analysis
-//    val Airline_Flight_Delay = List(
-//      ("F001", "Delta", "2023-11-01", "08:00", "2023-11-01", "10:00", 40, "New York"),
-//    ("F002", "United", "2023-11-01", "09:00", "2023-11-01", "11:30", 20, "New Orleans"),
-//    ("F003", "American", "2023-11-02", "07:30", "2023-11-02", "09:00", 60, "New York"),
-//    ("F004", "Delta", "2023-11-02", "10:00", "2023-11-02", "12:15", 30, "Chicago"),
-//     ("F005", "United", "2023-11-03", "08:45", "2023-11-03", "11:00", 50, "New York")
+    val Airline_Flight_Delay = List(
+      ("F001", "Delta", "2023-11-01", "08:00", "2023-11-01", "10:00", 40, "New York"),
+    ("F002", "United", "2023-11-01", "09:00", "2023-11-01", "11:30", 20, "New Orleans"),
+    ("F003", "American", "2023-11-02", "07:30", "2023-11-02", "09:00", 60, "New York"),
+    ("F004", "Delta", "2023-11-02", "10:00", "2023-11-02", "12:15", 30, "Chicago"),
+     ("F005", "United", "2023-11-03", "08:45", "2023-11-03", "11:00", 50, "New York")
+    )
+    val df35 = jideBritish.createDataFrame(Airline_Flight_Delay)toDF("flight_id", "airline","departure_date","departure_time","arrival_date", "arrival_time", "delay", "destination")
+    val df35_5 = df35.withColumn("departure_time2", to_timestamp($"departure_time"))
+                     .withColumn("arrival_time2", to_timestamp($"arrival_time")).drop("departure_time","arrival_time")
+    val  df36 = df35_5.withColumn("delay_minutes", abs(unix_timestamp($"departure_time2")-unix_timestamp($"arrival_time2"))/60)
+    val df37 = df36.filter(col("delay_minutes")> 30 && col("destination").startsWith("New"))
+    val w10 = Window.partitionBy("airline").orderBy("flight_id")
+    val lagstuff = df37.withColumn("delay trend", lag("delay",1).over(w10))
+    val df38 = lagstuff.groupBy("airline","destination")
+      .agg(
+      sum("delay_minutes").as("total delay minute")
+      ,max("delay_minutes").as("max delay minute")
+      ,avg("delay_minutes").as("avg delay mins")
+    )
+    df38.show()
+
+
+
+
+
+
+
+
+//    val Airline_Flight_Delay2 = List(
+//      ("F001", "Delta", "2023-11-01 08:00", "2023-11-01 10:00", 40, "New York"),
+//      ("F002", "United", "2023-11-01 09:00", "2023-11-01 11:30", 20, "New Orleans"),
+//      ("F003", "American", "2023-11-02 07:30", "2023-11-02 09:00", 60, "New York"),
+//      ("F004", "Delta", "2023-11-02 10:00", "2023-11-02 12:15", 30, "Chicago"),
+//      ("F005", "United", "2023-11-03 08:45", "2023-11-03 11:00", 50, "New York")
 //    )
-//    val df35 = jideBritish.createDataFrame(Airline_Flight_Delay)toDF("flight_id", "airline", "departure_time", "arrival_time", "delay", "destination")
-//    val  df36 = df35.withColumn("delay_minutes")
+//    val df50 = jideBritish.createDataFrame(Airline_Flight_Delay2)toDF("flight_id", "airline","departure_time","arrival_time", "delay", "destination")
+//    val df51 = df50.withColumn("departure date", split($"departure_time", " ").getItem(0))              //splitting date and time
+//    val df52 = df51.withColumn("departure time", split($"departure_time", " ").getItem(1)).drop("departure_time")
+//    val df53 = df52.withColumn("arrival date", split($"arrival_time", " ").getItem(0))
+//    val df54 = df53.withColumn("arrival time", split($"arrival_time", " ").getItem(1)).drop("arrival_time")
+//    val df55 = df54.withColumn("departure date", to_date($"departure date"))
+//    val df56 = df55.withColumn("departure time", date_format($"departure time".cast("timestamp"), "HH:mm:ss"))
+//    val df57 = df56.withColumn("arrival date", to_date($"arrival date"))
+//    val df58 = df57.withColumn("arrival time", date_format($"arrival time". cast("timestamp"), "HH:mm:ss"))
+//    val df59 = df58.withColumn("delay",  ($"delay")+2)
+//    df59.show()
+//    val df52 = df51.withColumn("delay_minutes",  datediff(($"departure time"),($"arrival time")))
+//    df52.show()
+//
+
+
+    //11.
 
 
 
